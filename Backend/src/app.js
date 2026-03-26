@@ -2,21 +2,24 @@ const express = require("express");
 const multer = require("multer");
 const uploadFile = require("./services/storage.service");
 const postModel = require("./models/post.model");
+const cors = require("cors");
+
 const app = express();
 
 // middleware to convert raw data into json
+app.use(cors());
 app.use(express.json());
 
 const upload = multer({ storage: multer.memoryStorage() });
 
-app.post("/create-post", upload.single("image"), async (req, res) => {
+app.post("/posts", upload.single("url"), async (req, res) => {
   //   console.log(req.body);
 
   const result = await uploadFile(req.file.buffer);
   //   console.log(result);
 
   const post = await postModel.create({
-    image: result.url,
+    url: result.url,
     caption: req.body.caption,
   });
 
